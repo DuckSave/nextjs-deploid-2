@@ -1,138 +1,225 @@
+"use client";
+import { useEffect, useState } from "react";
+import UserAPI from "@/api/admin";
+import { toast } from "@/components/hook/use-toast";
 import { AdminMenu } from "@/components/admin/admin-menu"
+import { Eye, EyeOff } from "lucide-react";
+interface User {
+  userId: string;
+  userName: string;
+  gmail: string;
+}
 
-export default function Home() {
+const AdminAccount = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [newUser, setNewUser] = useState({ userName: "", gmail: "", password: "" });
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
+  // Fetch user list
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
+
+  const fetchAccounts = async () => {
+    try {
+      const response = await UserAPI.account.getAllusers();
+      if (response.status === 200) {
+        setUsers(response.data);
+        console.log(response.data);
+      } else {
+        console.error("Lỗi: Response không hợp lệ");
+      }
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+      toast({ title: "Lỗi", description: "Không thể tải danh sách user.", variant: "destructive" });
+    }
+  };
+
+  // // Create user
+  // const handleCreateUser = async () => {
+  //   if (!newUser.userName || !newUser.gmail) {
+  //     toast({ title: "Lỗi", description: "Vui lòng nhập đủ thông tin.", variant: "destructive" });
+  //     return;
+  //   }
+  //   try {
+  //     const response = await UserAPI.account.createUser(newUser);
+  //     if (response.status === 201) {
+  //       toast({ title: "Thành công", description: "User đã được tạo." });
+  //       setUsers([...users, response.data]);
+  //       setNewUser({ userName: "", gmail: "" });
+  //     }
+  //   } catch (error) {
+  //     console.error("Lỗi tạo user:", error);
+  //     toast({ title: "Lỗi", description: "Không thể tạo user.", variant: "destructive" });
+  //   }
+  // };
+
+  // // Edit user
+  // const handleEditUser = (user: User) => {
+  //   setEditingUser(user);
+  // };
+
+  // // Update user
+  // const handleUpdateUser = async () => {
+  //   if (!editingUser) return;
+  //   try {
+  //     const response = await UserAPI.account.updateUser(editingUser.userId, editingUser);
+  //     if (response.status === 200) {
+  //       toast({ title: "Thành công", description: "User đã được cập nhật." });
+  //       setUsers(users.map((u) => (u.userId === editingUser.userId ? editingUser : u)));
+  //       setEditingUser(null);
+  //     }
+  //   } catch (error) {
+  //     console.error("Lỗi cập nhật user:", error);
+  //     toast({ title: "Lỗi", description: "Không thể cập nhật user.", variant: "destructive" });
+  //   }
+  // };
+
+  // // Delete user
+  // const handleDeleteUser = async (userId: string) => {
+  //   try {
+  //     await UserAPI.account.deleteUser(userId);
+  //     toast({ title: "Thành công", description: "User đã bị xóa." });
+  //     setUsers(users.filter((user) => user.userId !== userId));
+  //   } catch (error) {
+  //     console.error("Lỗi xóa user:", error);
+  //     toast({ title: "Lỗi", description: "Không thể xóa user.", variant: "destructive" });
+  //   }
+  // };
+
   return (
     <div className="min-h-screen bg-background">
       <AdminMenu />
       <main className="container mx-auto p-4 md:p-6">
         <div className="grid gap-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-blue-600">
+              Quản lý Users
+            </h1>
           </div>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {/* Dashboard cards */}
-            <div className="rounded-lg border bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="rounded-full bg-primary/10 p-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-primary"
-                  >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                    <circle cx="9" cy="7" r="4"></circle>
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm font-medium leading-none">Total Users</p>
-                  <p className="text-2xl font-bold">2,543</p>
-                </div>
+          <div className="rounded-lg border bg-card p-6 shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">Thêm User</h2>
+            <div className="grid gap-4 md:grid-cols-3">
+              <input
+                type="text"
+                name="username" 
+                placeholder="Tên user"
+                className="border rounded-md px-3 py-2 w-full bg-white text-black placeholder-gray-500 dark:bg-black dark:text-white dark:placeholder-gray-400"
+                value={newUser.userName}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, userName: e.target.value })
+                }
+                autoComplete="username" 
+              />
+              <input
+                type="email"
+                name="email" 
+                placeholder="Email"
+                className="border rounded-md px-3 py-2 w-full bg-white text-black placeholder-gray-500 dark:bg-black dark:text-white dark:placeholder-gray-400"
+                value={newUser.gmail}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, gmail: e.target.value })
+                }
+                autoComplete="email"
+              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  className="border rounded-md px-3 py-2 w-full bg-white text-black placeholder-gray-500 dark:bg-black dark:text-white dark:placeholder-gray-400 pr-10"
+                  value={newUser.password}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, password: e.target.value })
+                  }
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-3 flex items-center text-gray-600 dark:text-gray-300"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
-            </div>
-            <div className="rounded-lg border bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="rounded-full bg-primary/10 p-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-primary"
-                  >
-                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
-                    <path d="M3 6h18"></path>
-                    <path d="M16 10a4 4 0 0 1-8 0"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm font-medium leading-none">Total Products</p>
-                  <p className="text-2xl font-bold">1,789</p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-lg border bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="rounded-full bg-primary/10 p-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-primary"
-                  >
-                    <circle cx="8" cy="21" r="1"></circle>
-                    <circle cx="19" cy="21" r="1"></circle>
-                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm font-medium leading-none">Total Orders</p>
-                  <p className="text-2xl font-bold">432</p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-lg border bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-4">
-                <div className="rounded-full bg-primary/10 p-3">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-6 w-6 text-primary"
-                  >
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm font-medium leading-none">Total Revenue</p>
-                  <p className="text-2xl font-bold">$45,231</p>
-                </div>
-              </div>
+              <button className="bg-green-500 text-white px-4 py-2 rounded-md">
+                Thêm
+              </button>
             </div>
           </div>
-          {/* Placeholder content */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-            <div className="col-span-4 rounded-lg border bg-card shadow-sm">
-              <div className="p-6">
-                <h3 className="text-lg font-medium">Recent Sales</h3>
-                <div className="h-[300px] w-full bg-muted/20 mt-4 rounded-md"></div>
-              </div>
-            </div>
-            <div className="col-span-3 rounded-lg border bg-card shadow-sm">
-              <div className="p-6">
-                <h3 className="text-lg font-medium">Top Products</h3>
-                <div className="h-[300px] w-full bg-muted/20 mt-4 rounded-md"></div>
-              </div>
-            </div>
+          <div className="rounded-lg border bg-card p-6 shadow-sm">
+            <h2 className="text-lg font-semibold mb-4">Danh sách Users</h2>
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr className="bg-gray-200 text-gray-700 dark:bg-black dark:text-white">
+                  <th className="border p-3">User ID</th>
+                  <th className="border p-3">Tên</th>
+                  <th className="border p-3">Email</th>
+                  <th className="border p-3">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.length > 0 ? (
+                  users.map((user) => (
+                    <tr key={user.userId} className="text-center">
+                      <td className="border p-2">{user.userId}</td>
+                      <td className="border p-2">{user.userName}</td>
+                      <td className="border p-2">{user.gmail}</td>
+                      <td className="border p-2 flex justify-center gap-2">
+                        <button 
+                          className="bg-blue-500 text-white px-3 py-1 rounded-md"
+                          onClick={() => setEditingUser(user)}
+                        >
+                          Sửa
+                        </button>
+                        <button className="bg-red-500 text-white px-3 py-1 rounded-md">
+                          Xóa
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="text-center text-gray-500 py-3">
+                      Đang tải...
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
+
+          {/* Cập nhật User */}
+          {editingUser && (
+            <div className="rounded-lg border bg-card p-6 shadow-sm">
+              <h2 className="text-lg font-semibold">Cập nhật User</h2>
+              <div className="grid gap-4">
+                <input
+                  type="text"
+                  className="border rounded-md px-3 py-2 w-full"
+                  value={editingUser.userName}
+                  onChange={(e) =>
+                    setEditingUser({ ...editingUser, userName: e.target.value })
+                  }
+                />
+                <input
+                  type="email"
+                  className="border rounded-md px-3 py-2 w-full"
+                  value={editingUser.gmail}
+                  onChange={(e) =>
+                    setEditingUser({ ...editingUser, gmail: e.target.value })
+                  }
+                />
+                <button className="bg-blue-600 text-white px-4 py-2 rounded-md">
+                  Cập nhật
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
+export default AdminAccount;
