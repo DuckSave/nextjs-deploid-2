@@ -8,6 +8,7 @@ interface User {
   userId: string;
   userName: string;
   gmail: string;
+  password: String;
 }
 
 const AdminAccount = () => {
@@ -148,13 +149,14 @@ const AdminAccount = () => {
             </div>
           </div>
           <div className="rounded-lg border bg-card p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4">Danh sách Users</h2>
+            <h2 className="text-lg font-semibold mb-5">Danh sách Users</h2>
             <table className="w-full border-collapse border border-gray-300">
               <thead>
                 <tr className="bg-gray-200 text-gray-700 dark:bg-black dark:text-white">
                   <th className="border p-3">User ID</th>
                   <th className="border p-3">Tên</th>
                   <th className="border p-3">Email</th>
+                  <th className="border p-3">Password</th>
                   <th className="border p-3">Hành động</th>
                 </tr>
               </thead>
@@ -165,6 +167,7 @@ const AdminAccount = () => {
                       <td className="border p-2">{user.userId}</td>
                       <td className="border p-2">{user.userName}</td>
                       <td className="border p-2">{user.gmail}</td>
+                      <td className="border p-2">{user.password}</td>
                       <td className="border p-2 flex justify-center gap-2">
                         <button 
                           className="bg-blue-500 text-white px-3 py-1 rounded-md"
