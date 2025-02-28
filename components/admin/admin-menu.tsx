@@ -130,7 +130,7 @@ export function AdminMenu() {
 
           {/* Desktop navigation */}
           <nav className="hidden md:flex items-center gap-5 text-sm font-medium">
-            <Link href="#" className="transition-colors hover:text-foreground/80">
+            <Link href="/admin/dashboard" className="transition-colors hover:text-foreground/80">
               Dashboard
             </Link>
             <DropdownMenu>
@@ -142,7 +142,7 @@ export function AdminMenu() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start">
                 <DropdownMenuItem asChild>
-                  <Link href="#">All Users</Link>
+                  <Link href="/admin/user">All Users</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="#">Add New User</Link>
