@@ -23,7 +23,7 @@ const AdminAccount = () => {
 
   const fetchAccounts = async () => {
     try {
-      const response = await UserAPI.account.seresere();
+      const response = await UserAPI.account.getAllusers();
       if (response.status === 200) {
         setUsers(response.data);
         console.log(response.data);
