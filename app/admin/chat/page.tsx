@@ -3,7 +3,7 @@ import React from "react";
 export default function ChatManament() { 
     return (
         <div>
-            hêllo chỗ này là chat
+            heeeloooo Quỳnh Như , nhớ QN lắm á , ĐL nghiêm túc
         </div>
     )
 }
