@@ -87,8 +87,6 @@ export default function AuthBasic() {
               </CardContent>
             </Card>
           </div>
-
-
         </div>
       </div>
     </div>

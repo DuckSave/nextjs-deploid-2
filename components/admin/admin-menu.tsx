@@ -216,7 +216,7 @@ export function AdminMenu() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                   <Avatar className="h-8 w-8">
-                    <AvatarImage src="/placeholder.svg?height=32&width=32" alt="Admin" />
+                    <AvatarImage alt="Admin" />
                     <AvatarFallback>AD</AvatarFallback>
                   </Avatar>
                 </Button>

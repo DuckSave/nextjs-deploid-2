@@ -1,29 +1,45 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation" 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Loader2, LockIcon } from "lucide-react"
-
+import AuthAPI from "@/api/auth"
 export function AuthForm() {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter() // ✅ Dùng để chuyển hướng
 
+  
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setIsLoading(true)
+    setError(null)
 
     const formData = new FormData(e.target as HTMLFormElement)
-    const email = formData.get("email") as string
+    const gmail = formData.get("email") as string
     const password = formData.get("password") as string
-
     try {
-      /**
-       * To update with your actual authentication logic
-       */
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      console.log("Signing in with:", email, password)
+      // ✅ Gọi API đăng nhập
+      const response = await AuthAPI.account.signIn({ gmail, password })
+      const token = response.data.token
+      const role = response.data.role // 🎯 Lấy role từ API
+      console.log("API Response:", response)
+      if(response.status === 200) {
+        // ✅ Lưu token vào localStorage
+        localStorage.setItem("token", token)
+        localStorage.setItem("role", role)
+        console.log(response.data)
+        if(role === true){ 
+          router.push("/admin/dashboard")
+        }else{ 
+          router.push("/user/home")
+        }
+      }
     } catch (error) {
       console.error("Authentication error:", error)
+      setError("Email hoặc mật khẩu không đúng!")
     } finally {
       setIsLoading(false)
     }
@@ -36,9 +52,7 @@ export function AuthForm() {
           Email
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 flex items-center justify-center w-4 h-4">
-            @
-          </span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">@</span>
           <Input
             type="email"
             name="email"
@@ -65,6 +79,8 @@ export function AuthForm() {
           />
         </div>
       </div>
+
+      {error && <p className="text-red-500 text-sm">{error}</p>} {/* ✅ Hiển thị lỗi */}
 
       <Button
         type="submit"
