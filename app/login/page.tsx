@@ -1,9 +1,9 @@
 import React from "react";
-
+import Login from "@/components/login/auth-basic"
 export default function ChatManament() { 
     return (
         <div>
-            heeeloooo Quỳnh Như , nhớ QN lắm á , ĐL nghiêm túc
+            <Login/>
         </div>
     )
 }
