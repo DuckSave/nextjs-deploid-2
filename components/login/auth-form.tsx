@@ -6,10 +6,23 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Loader2, LockIcon } from "lucide-react"
 import AuthAPI from "@/api/auth"
+import {jwtDecode}  from "jwt-decode"
+
+function getUserRole(token: string): string | null {
+  try {
+    const decoded: any = jwtDecode(token) // ✅ Giải mã JWT
+    return decoded.role || null // 🔥 Lấy role từ payload của token
+  } catch (error) {
+    console.error("Invalid token", error)
+    return null
+  }
+}
+
 export function AuthForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter() // ✅ Dùng để chuyển hướng
+
 
   
   async function handleSubmit(e: React.FormEvent) {
@@ -20,20 +33,21 @@ export function AuthForm() {
     const formData = new FormData(e.target as HTMLFormElement)
     const gmail = formData.get("email") as string
     const password = formData.get("password") as string
+
     try {
       // ✅ Gọi API đăng nhập
       const response = await AuthAPI.account.signIn({ gmail, password })
-      const token = response.data.token
-      const role = response.data.role // 🎯 Lấy role từ API
-      console.log("API Response:", response)
-      if(response.status === 200) {
-        // ✅ Lưu token vào localStorage
-        localStorage.setItem("token", token)
-        localStorage.setItem("role", role)
-        console.log(response.data)
-        if(role === true){ 
+      if (response.status === 200) {
+        const token = response.data.token
+        localStorage.setItem("token", token) // ✅ Chỉ lưu token
+
+        // 🎯 Lấy role từ token sau khi giải mã
+        const role = getUserRole(token)
+        console.log("User Role:", role)
+
+        if (role === "ADMIN") {
           router.push("/admin/dashboard")
-        }else{ 
+        } else {
           router.push("/user/home")
         }
       }
