@@ -1,73 +1,88 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation" 
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Loader2, LockIcon ,UserIcon} from "lucide-react"
+import { Loader2, LockIcon, UserIcon } from "lucide-react"
 import AuthAPI from "@/api/auth"
-import { jwtDecode } from "jwt-decode"
-
-function getUserRole(token: string): string | null {
-  try {
-    const decoded: any = jwtDecode(token) // ✅ Giải mã JWT
-    return decoded.role || null // 🔥 Lấy role từ payload của token
-  } catch (error) {
-    console.error("Invalid token", error)
-    return null
-  }
-}
+import { SusseccAlert, ErrorAlert, WarningAlert } from "@/util/AlertSW"
 
 export function AuthForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
-  const [passwordError, setPasswordError] = useState<string | null>(null) // ✅ Lỗi password
+  const [emailError, setEmailError] = useState<string | null>(null)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
 
-  const router = useRouter() // ✅ Dùng để chuyển hướng
+  const router = useRouter()
+
+  function validateForm(): boolean {
+    let isValid = true
+
+    // Kiểm tra email hợp lệ
+    if (!email) {
+      setEmailError("Email không được để trống , không có sao đăng nhập")
+      isValid = false
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      setEmailError("Email mà không có @ là khó nói @@!")
+      isValid = false
+    } else {
+      setEmailError(null)
+    }
+
+    // Kiểm tra mật khẩu hợp lệ
+    if (!password) {
+      setPasswordError("Không được để trống mật khẩu!!")
+      isValid = false
+    } else if (password.length < 6) {
+      setPasswordError("để ít quá không được ,phải trên 6 ký tự cho ngta đừng vô :))")
+      isValid = false
+    } else if (password !== confirmPassword) {
+      setPasswordError("Mấy tuổi rồi còn chưa nhập lại mật khẩu được vậy?")
+      isValid = false
+    } else {
+      setPasswordError(null)
+    }
+
+    return isValid
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+
+    // Gọi hàm validate trước khi gửi form
+    if (!validateForm()) return
+
     setIsLoading(true)
     setError(null)
-    setPasswordError(null)
-  
-    // Kiểm tra password có khớp không
-    if (password !== confirmPassword) {
-      setPasswordError("Mấy tuổi rồi còn nhập sai password nữa")
-      setIsLoading(false)
-      return
-    }
-  
+
     const formData = new FormData(e.target as HTMLFormElement)
-    const gmail = formData.get("email") as string
-    let userName = formData.get("username") as string | null
+    const userName = formData.get("username") as string | null
     const role = "ROLE_USER"
-    userName = userName && userName.trim() !== "" ? userName : null
-  
+
     try {
-      const response = await AuthAPI.account.signUp({ gmail, password, userName, role })
-  
+      const response = await AuthAPI.account.signUp({ gmail: email, password, userName, role })
+
       if (response.status === 200) {
-        router.push("/sign-in") 
+        SusseccAlert("Okeeeee", "Đăng nhập thôi nào")
+        router.push("/sign-in") // ✅ Chuyển đến trang đăng nhập
       } else {
-        setError("Đăng ký thất bại, vui lòng thử lại!")
+        ErrorAlert("Lỗi", "Gmail này đã được đăng ký rồi!")
       }
     } catch (error: any) {
-      console.error("Authentication error:", error)
-  
-      if (error.response && error.response.data && error.response.data.message) {
-        setError(error.response.data.message)
-      } else {
-        setError("Lỗi không xác định, vui lòng thử lại!")
-      }
+      WarningAlert("Lỗi", "Lỗi không xác định, vui lòng thử lại!")
+      setError(error.response?.data?.message || "Lỗi không xác định!")
     } finally {
       setIsLoading(false)
     }
   }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+      {/* Email */}
       <div className="space-y-2">
         <label htmlFor="email" className="text-sm font-medium text-black dark:text-white">
           Email
@@ -77,6 +92,8 @@ export function AuthForm() {
           <Input
             type="email"
             name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="name@example.com"
             required
             disabled={isLoading}
@@ -84,25 +101,28 @@ export function AuthForm() {
             autoComplete="email"
           />
         </div>
+        {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
       </div>
+
+      {/* Username */}
       <div className="space-y-2">
         <label htmlFor="username" className="text-sm font-medium text-black dark:text-white">
-          User Name "không có cũng được"
+          User Name (không bắt buộc)
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></span>
           <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
           <Input
             type="text"
             name="username"
             placeholder="Enter your username"
-            required
             disabled={isLoading}
             className="pl-10 h-12 bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring"
             autoComplete="username"
           />
         </div>
       </div>
+
+      {/* Password */}
       <div className="space-y-2">
         <label className="text-sm font-medium text-black dark:text-white">Password</label>
         <div className="relative">
@@ -120,6 +140,7 @@ export function AuthForm() {
         </div>
       </div>
 
+      {/* Confirm Password */}
       <div className="space-y-2">
         <label className="text-sm font-medium text-black dark:text-white">Confirm Password</label>
         <div className="relative">
@@ -135,11 +156,13 @@ export function AuthForm() {
             className="pl-10 h-12 bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring"
           />
         </div>
-        {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>} {/* ✅ Hiển thị lỗi */}
+        {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
       </div>
 
-      {error && <p className="text-red-500 text-sm">{error}</p>} {/* ✅ Hiển thị lỗi đăng nhập */}
+      {/* Hiển thị lỗi từ API */}
+      {error && <p className="text-red-500 text-sm">{error}</p>}
 
+      {/* Nút đăng ký */}
       <Button
         type="submit"
         disabled={isLoading}
