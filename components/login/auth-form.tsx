@@ -45,7 +45,7 @@ export function AuthForm() {
         const role = getUserRole(token)
         console.log("User Role:", role)
 
-        if (role === "ADMIN") {
+        if (role === "ROLE_ADMIN") {
           router.push("/admin/dashboard")
         } else {
           router.push("/user/home")
