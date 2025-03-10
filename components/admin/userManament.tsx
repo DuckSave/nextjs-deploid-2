@@ -23,7 +23,8 @@ const AdminAccount = () => {
 
   const fetchAccounts = async () => {
     try {
-      const response = await UserAPI.account.getAllusers();
+      const response = await UserAPI.account.getAllUsers();
+      
       if (response.status === 200) {
         setUsers(response.data);
         console.log(response.data);
@@ -32,7 +33,6 @@ const AdminAccount = () => {
       }
     } catch (error) {
       console.error("Error fetching accounts:", error);
-      toast({ title: "Lỗi", description: "Không thể tải danh sách user.", variant: "destructive" });
     }
   };
 
