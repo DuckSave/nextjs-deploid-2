@@ -136,6 +136,7 @@ export function AuthForm() {
             required
             disabled={isLoading}
             className="pl-10 h-12 bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring"
+            autoComplete="new-password"
           />
         </div>
       </div>
@@ -154,6 +155,7 @@ export function AuthForm() {
             required
             disabled={isLoading}
             className="pl-10 h-12 bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring"
+            autoComplete="current-password"
           />
         </div>
         {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}

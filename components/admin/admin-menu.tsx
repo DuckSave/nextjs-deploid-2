@@ -23,15 +23,23 @@ import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useRouter } from "next/navigation"
 
 export function AdminMenu() {
   const [isDarkMode, setIsDarkMode] = React.useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false)
-
+  const router = useRouter()
+  
   // Toggle dark mode
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode)
     document.documentElement.classList.toggle("dark")
+  }
+
+
+  const handleLogout = () => {
+    localStorage.removeItem("token") // 🗑 Xóa token khỏi localStorage
+    router.push("/") // 🔄 Chuyển hướng về trang đăng nhập
   }
 
   return (
@@ -232,7 +240,7 @@ export function AdminMenu() {
                     Settings
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-950/50">
+                <DropdownMenuItem className="text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-950/50" onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>

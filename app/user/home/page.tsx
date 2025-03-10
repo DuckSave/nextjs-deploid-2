@@ -1,9 +1,8 @@
 import React from "react";
+import UserHome from "@/components/user/userHome"
 
 export default function Home() { 
     return (
-        <div>
-            <h1>Home user</h1>
-        </div>
+        <UserHome/>
     )
 }
