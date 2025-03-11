@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -26,6 +27,11 @@ interface UserMenuProps {
 
 export function UserMenu({ user, isCollapsed, onLogout }: UserMenuProps) {
   const { theme, setTheme } = useTheme()
+  const [isDarkMode, setIsDarkMode] = React.useState(false)
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode)
+    document.documentElement.classList.toggle("dark")
+  }
 
   return (
     <DropdownMenu>
@@ -57,7 +63,7 @@ export function UserMenu({ user, isCollapsed, onLogout }: UserMenuProps) {
           <HelpCircle className="mr-2 size-4" />
           <span>Help</span>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>
+        <DropdownMenuItem onClick={toggleDarkMode}>
           {theme === "dark" ? <Sun className="mr-2 size-4" /> : <Moon className="mr-2 size-4" />}
           <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
         </DropdownMenuItem>
