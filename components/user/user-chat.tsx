@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AdminMenu } from "@/components/user/user-menu"
+import { jwtDecode } from "jwt-decode"
 
 const mockUsers = [
   { id: "user1", name: "John Doe", status: "online", unread: 3 },
@@ -48,7 +49,20 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelectUser, onLogout }) => {
   )
 }
 
-export default function AdminChatPage() {
+function getUserId(): string | null {
+  const token = localStorage.getItem("token")
+  if (!token) return null
+
+  try {
+    const decoded: any = jwtDecode(token)
+    return decoded.userId || decoded.sub || null
+  } catch (error) {
+    console.error("Lỗi khi giải mã token:", error)
+    return null
+  }
+}
+
+export default function UserPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
   const [messages, setMessages] = useState(mockMessages)
   const [input, setInput] = useState("")
