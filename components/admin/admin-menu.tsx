@@ -153,10 +153,7 @@ export function AdminMenu() {
                   <Link href="/admin/user">All Users</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="#">Add New User</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="#">User Roles</Link>
+                  <Link href="/admin/chat">Chat User</Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

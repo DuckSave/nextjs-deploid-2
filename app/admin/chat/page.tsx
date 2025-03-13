@@ -1,9 +1,8 @@
 import React from "react";
+import ChatManament from "@/components/admin/chat-user";
 
-export default function ChatManament() { 
+export default function ChatManaments() { 
     return (
-        <div>
-            heeeloooo Quỳnh Như , nhớ QN lắm á , ĐL nghiêm túc
-        </div>
+        <ChatManament/>
     )
 }

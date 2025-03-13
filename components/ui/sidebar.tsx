@@ -11,10 +11,7 @@ import { UserMenu } from "@/components/user/user-menu"
 // Mock user data - in a real app, this would come from your database
 const mockUsers = [
   { id: "1", name: "John Doe", avatar: "/placeholder.svg?height=40&width=40", status: "online" },
-  { id: "2", name: "Jane Smith", avatar: "/placeholder.svg?height=40&width=40", status: "offline" },
-  { id: "3", name: "Mike Johnson", avatar: "/placeholder.svg?height=40&width=40", status: "online" },
-  { id: "4", name: "Sarah Williams", avatar: "/placeholder.svg?height=40&width=40", status: "away" },
-  { id: "5", name: "David Brown", avatar: "/placeholder.svg?height=40&width=40", status: "online" },
+
 ]
 
 // Mock current user data
@@ -74,7 +71,7 @@ export function Sidebar({ onSelectUser, onLogout }: SidebarProps) {
 
       {/* Users list */}
       <div className="flex-grow overflow-y-auto p-2">
-        <h3 className={cn("text-sm font-medium text-muted-foreground mb-2 px-2", !isOpen && "hidden")}>Users</h3>
+        <h3 className={cn("text-sm font-medium text-muted-foreground mb-2 px-2", !isOpen && "hidden")}>Admin</h3>
         {filteredUsers.length > 0 ? (
           <ul className="space-y-1">
             {filteredUsers.map((user) => (
