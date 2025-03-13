@@ -34,15 +34,7 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelectUser, onLogout }) => {
             <div className="flex-1 min-w-0 hidden md:block">
               <div className="flex items-center justify-between">
                 <p className="font-medium truncate">{user.name}</p>
-                {user.unread > 0 && (
-                  <span className="ml-2 bg-destructive text-destructive-foreground text-xs rounded-full px-2 py-0.5">
-                    {user.unread}
-                  </span>
-                )}
               </div>
-              <p className="text-sm text-muted-foreground truncate">
-                {user.status === "online" ? "Online" : "Offline"}
-              </p>
             </div>
           </div>
         ))}
@@ -93,13 +85,13 @@ export default function AdminChatPage() {
       <AdminMenu />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar onSelectUser={setSelectedUserId} onLogout={() => console.log("Logged out")} />
-        <div className="flex-1 flex items-center justify-center p-4 ml-16 md:ml-64 transition-all duration-300">
-          <Card className="w-full max-w-2xl shadow-lg">
-            <CardHeader className="bg-primary text-primary-foreground">
-              <CardTitle>{selectedUserId ? `Chat với ${selectedUserName}` : "Chọn một người để nhắn tin"}</CardTitle>
+        <div className="flex-1 flex">
+          <Card className="w-full shadow-lg">
+            <CardHeader className="bg-primary text-primary-foreground p-2">
+              <CardTitle className="text-2xl">{selectedUserId ? `Chat với ${selectedUserName}` : "Chọn một người để nhắn tin"}</CardTitle>
             </CardHeader>
-            <CardContent className="h-[60vh] overflow-y-auto p-4 space-y-4">
-              {messages
+            <CardContent className="h-[77vh] overflow-y-auto p-4 space-y-4">
+              {messages 
                 .filter((m) => m.senderId === "me" || m.senderId === selectedUserId)
                 .map((m) => (
                   <div key={m.id} className={`flex ${m.senderId === "me" ? "justify-end" : "justify-start"}`}>
@@ -112,7 +104,7 @@ export default function AdminChatPage() {
                 ))}
               <div ref={messagesEndRef} />
             </CardContent>
-            <CardFooter className="border-t p-4">
+            <CardFooter className="border-t p-2">
               <form onSubmit={handleSubmit} className="flex w-full space-x-2">
                 <Input
                   value={input}

@@ -80,7 +80,7 @@ export function AuthForm() {
       if (role === "ROLE_ADMIN") {
         router.push("/admin/dashboard")
       } else {
-        router.push("/user/home")
+        router.push("/user/chat")
       }
     } catch (error) {
       console.error("Authentication error:", error)
