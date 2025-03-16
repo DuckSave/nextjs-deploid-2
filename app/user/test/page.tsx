@@ -23,7 +23,7 @@ const ChatRoom = () => {
 
     useEffect(() => {
       if (joined && username) {
-          const socket = new SockJS("https://localhost:8080/ws"); // Sửa URL nếu cần
+          const socket = new SockJS("https://3.107.182.209:8080/ws"); // Sửa URL nếu cần
           const client = new Client({
               webSocketFactory: () => socket,
               onConnect: () => {
