@@ -6,15 +6,22 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { AdminMenu } from "@/components/admin/admin-menu"
+import { jwtDecode } from "jwt-decode"
+import { Client } from "@stomp/stompjs"
+import SockJS from "sockjs-client"
 
 const mockUsers = [
-  { id: "user1", name: "John Doe", status: "online", unread: 3 },
+  { id: "67caccc434e3f94c55913f45", name: "Như ", status: "online", unread: 3 },
 ]
 
-const mockMessages = [
-  { id: 1, senderId: "user1", content: "Hello, I need some help with my account", timestamp: new Date().toISOString() },
-  { id: 2, senderId: "me", content: "Hi there! I'd be happy to help. What seems to be the issue?", timestamp: new Date().toISOString() },
-]
+interface Message {
+  id: number
+  senderId: string
+  receiverId: string
+  content: string
+  timestamp: string
+}
+
 
 interface SidebarProps {
   onSelectUser: (userId: string) => void
@@ -50,65 +57,124 @@ const Sidebar: React.FC<SidebarProps> = ({ onSelectUser, onLogout }) => {
 
 export default function AdminChatPage() {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
-  const [messages, setMessages] = useState(mockMessages)
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
+  const [userId, setUserId] = useState<string | null>(null)
+  const [client, setClient] = useState<Client | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value)
-  }
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (token) {
+      try {
+        const decoded: any = jwtDecode(token)
+        setUserId(decoded.userId || decoded.sub)
+      } catch (error) {
+        console.error("Lỗi khi giải mã token:", error)
+      }
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!userId) return;
+  
+    const stompClient = new Client({
+      webSocketFactory: () => new SockJS("https://localhost:8080/ws"),
+      onConnect: () => {
+        console.log("✅ Kết nối WebSocket thành công!");
+    
+        stompClient.subscribe("/user/queue/messages", (message) => {
+          console.log("📩 Tin nhắn nhận được từ server:", message.body);
+          const receivedMessage = JSON.parse(message.body);
+          console.log("📩 Nội dung tin nhắn:", receivedMessage);
+        });
+    
+        console.log("📡 Đã subscribe tới: /user/queue/messages");
+      },
+      onStompError: (frame) => {
+        console.error("❌ Lỗi WebSocket:", frame);
+      }
+    });
+    
+    stompClient.activate();
+    setClient(stompClient);
+  
+    return () => {
+      stompClient.deactivate();
+    };
+  }, [userId, selectedUserId]); // Thêm `selectedUserId` để cập nhật khi đổi người chat
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!input.trim() || !selectedUserId) return
-
+    e.preventDefault();
+    if (!input.trim() || !selectedUserId || !userId || !client) return;
+  
     const newMessage = {
-      id: messages.length + 1,
-      senderId: "me",
+      senderId: userId,
+      receiverId: selectedUserId,
       content: input.trim(),
       timestamp: new Date().toISOString(),
-    }
-
-    setMessages([...messages, newMessage])
-    setInput("")
-  }
+    };
+  
+    client.publish({
+      destination: "/app/chat",
+      body: JSON.stringify(newMessage),
+    });
+  
+    // Thêm tin nhắn vào state để hiển thị ngay lập tức
+    setMessages((prev) => [...prev, { ...newMessage, id: prev.length + 1 }]);
+    setInput("");
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
 
-  const selectedUser = mockUsers.find((user) => user.id === selectedUserId)
-  const selectedUserName = selectedUser ? selectedUser.name : ""
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <AdminMenu />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar onSelectUser={setSelectedUserId} onLogout={() => console.log("Logged out")} />
+        <div className="w-64 bg-card border-r p-2">
+          {mockUsers.map((user) => (
+            <div
+              key={user.id}
+              className="p-3 cursor-pointer hover:bg-accent"
+              onClick={() => setSelectedUserId(user.id)}
+            >
+              <p className="font-medium">{user.name}</p>
+            </div>
+          ))}
+        </div>
         <div className="flex-1 flex">
           <Card className="w-full shadow-lg">
             <CardHeader className="bg-primary text-primary-foreground p-2">
-              <CardTitle className="text-2xl">{selectedUserId ? `Chat với ${selectedUserName}` : "Chọn một người để nhắn tin"}</CardTitle>
+              <CardTitle className="text-2xl">
+                {selectedUserId ? `Chat với ${mockUsers.find(u => u.id === selectedUserId)?.name || "Người dùng"}` : "Chọn một người để nhắn tin"}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="h-[77vh] overflow-y-auto p-4 space-y-4">
-              {messages 
-                .filter((m) => m.senderId === "me" || m.senderId === selectedUserId)
-                .map((m) => (
-                  <div key={m.id} className={`flex ${m.senderId === "me" ? "justify-end" : "justify-start"}`}>
-                    <div
-                      className={`max-w-[80%] rounded-lg p-3 ${m.senderId === "me" ? "bg-primary text-primary-foreground rounded-br-none" : "bg-muted text-muted-foreground rounded-bl-none"}`}
-                    >
-                      {m.content}
+              <CardContent className="h-[77vh] overflow-y-auto p-4 space-y-4">
+                {messages
+                  .filter((m) =>
+                    (m.senderId === userId && m.receiverId === selectedUserId) ||
+                    (m.senderId === selectedUserId && m.receiverId === userId)
+                  )
+                  .map((m) => (
+                    <div key={m.id} className={`flex ${m.senderId === userId ? "justify-end" : "justify-start"}`}>
+                      <div
+                        className={`max-w-[80%] rounded-lg p-3 ${
+                          m.senderId === userId ? "bg-primary text-primary-foreground rounded-br-none" : "bg-muted text-muted-foreground rounded-bl-none"
+                        }`}
+                      >
+                        {m.content}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              <div ref={messagesEndRef} />
-            </CardContent>
+                  ))}
+                <div ref={messagesEndRef} />
+              </CardContent>
             <CardFooter className="border-t p-2">
               <form onSubmit={handleSubmit} className="flex w-full space-x-2">
                 <Input
                   value={input}
-                  onChange={handleInputChange}
+                  onChange={(e) => setInput(e.target.value)}
                   placeholder="Nhập tin nhắn..."
                   className="flex-grow"
                   disabled={!selectedUserId}
