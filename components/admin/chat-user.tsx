@@ -79,11 +79,11 @@ export default function AdminChatPage() {
     if (!userId) return;
   
     const stompClient = new Client({
-      webSocketFactory: () => new SockJS("https://localhost:8080/ws"),
+      webSocketFactory: () => new SockJS("https://3.107.182.209:8080/ws"),
       onConnect: () => {
         console.log("✅ Kết nối WebSocket thành công!");
     
-        stompClient.subscribe("/user/queue/messages", (message) => {
+        stompClient.subscribe(`/user/${userId}/private`, (message) => {
           console.log("📩 Tin nhắn nhận được từ server:", message.body);
           const receivedMessage = JSON.parse(message.body);
           console.log("📩 Nội dung tin nhắn:", receivedMessage);
