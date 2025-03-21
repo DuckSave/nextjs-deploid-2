@@ -59,7 +59,7 @@ export function AdminMenu() {
               <div className="flex flex-col gap-6">
                 <div className="flex items-center gap-2">
                   <LayoutDashboard className="h-6 w-6" />
-                  <span className="text-lg font-bold">Admin Panel</span>
+                  <span className="text-lg font-bold">User Panel</span>
                 </div>
                 <nav className="flex flex-col gap-2">
                   <Link
@@ -71,7 +71,7 @@ export function AdminMenu() {
                     Users
                   </Link>
                   <Link
-                    href="#"
+                    href="/about-me"
                     className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -104,7 +104,7 @@ export function AdminMenu() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Link href="#" className="transition-colors hover:text-foreground/80">
+            <Link href="/about-me" className="transition-colors hover:text-foreground/80">
               About Me
             </Link>
             
