@@ -101,7 +101,7 @@ export default function AdminChatPage() {
                   <div key={index} className={`flex ${m.senderName === userId ? "justify-end" : "justify-start"}`}>
                     <div
                       className={`max-w-[80%] rounded-lg p-3 ${
-                        m.senderName === userId ? "bg-primary text-primary-foreground rounded-br-none" : "bg-muted text-black rounded-bl-none"
+                        m.senderName === userId ? "bg-primary text-primary-foreground rounded-br-none" : "bg-muted text-black-foreground rounded-bl-none"
                       }`}
                     >
                       {m.message}
