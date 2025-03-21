@@ -44,26 +44,30 @@ export function SocialLogin() {
   }
 
   return (
-    <>
+    <div className="space-y-6"> {/* Thêm khoảng cách tổng thể */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <Separator className="w-full border-neutral-200 dark:border-neutral-800" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white dark:bg-black px-2 text-neutral-600 dark:text-neutral-400">đừng có đăng nhập bằng GG nha</span>
+          <span className="bg-white dark:bg-black px-2 text-neutral-600 dark:text-neutral-400">
+            đừng có đăng nhập bằng GG nha
+          </span>
         </div>
       </div>
 
-      <Button
-        variant="outline"
-        onClick={handleGoogleSignIn}
-        disabled={isGoogleLoading}
-        className="w-full h-12 font-medium border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:bg-black dark:hover:bg-neutral-900 transition-colors"
-      >
-        {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon />}
-        {isGoogleLoading ? "Connecting..." : "Sign in with Google"}
-      </Button>
-    </>
+      <div className="py-6"> {/* Tạo khoảng trống dưới */}
+        <Button
+          variant="outline"
+          onClick={handleGoogleSignIn}
+          disabled={isGoogleLoading}
+          className="w-full h-12 font-medium border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:bg-black dark:hover:bg-neutral-900 transition-colors"
+        >
+          {isGoogleLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <GoogleIcon />}
+          {isGoogleLoading ? "Connecting..." : "Sign in with Google"}
+        </Button>
+      </div>
+    </div>
   )
 }
 

@@ -21,7 +21,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from "next/navigation"
 
@@ -55,6 +55,7 @@ export function AdminMenu() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[240px] sm:w-[300px]">
+              <SheetTitle className="sr-only">User Panel</SheetTitle> 
               <div className="flex flex-col gap-6">
                 <div className="flex items-center gap-2">
                   <LayoutDashboard className="h-6 w-6" />
@@ -62,15 +63,7 @@ export function AdminMenu() {
                 </div>
                 <nav className="flex flex-col gap-2">
                   <Link
-                    href="#"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <Home className="h-5 w-5" />
-                    Dashboard
-                  </Link>
-                  <Link
-                    href="#"
+                    href="/user/chat"
                     className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
@@ -82,48 +75,8 @@ export function AdminMenu() {
                     className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    <Package className="h-5 w-5" />
-                    Products
-                  </Link>
-                  <Link
-                    href="#"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <ShoppingCart className="h-5 w-5" />
-                    Orders
-                  </Link>
-                  <Link
-                    href="#"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <BarChart3 className="h-5 w-5" />
-                    Analytics
-                  </Link>
-                  <Link
-                    href="#"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <CreditCard className="h-5 w-5" />
-                    Payments
-                  </Link>
-                  <Link
-                    href="#"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <FileText className="h-5 w-5" />
-                    Reports
-                  </Link>
-                  <Link
-                    href="#"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
                     <Settings className="h-5 w-5" />
-                    Settings
+                    About Me
                   </Link>
                 </nav>
               </div>
@@ -140,12 +93,12 @@ export function AdminMenu() {
           <nav className="hidden md:flex items-center gap-5 text-sm font-medium">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="link" className="gap-1 p-0">
-                  Users
+                <Button variant="link" className="gap-1 p-0" data-state="open">
+                  Chat
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
+              <DropdownMenuContent align="end" className="z-[10000]">
                 <DropdownMenuItem asChild>
                   <Link href="/user/chat">Chat</Link>
                 </DropdownMenuItem>

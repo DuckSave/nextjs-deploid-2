@@ -78,7 +78,7 @@ export default function AuthBasic() {
                   Hello!!!!
                 </CardTitle>
                 <CardDescription className="text-neutral-600 dark:text-neutral-400">
-                  Không có tài khoản mà bấm vào đây là ăn đập liền
+                  không có tài khoản mà bấm vào đây thì khó nói nha
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">

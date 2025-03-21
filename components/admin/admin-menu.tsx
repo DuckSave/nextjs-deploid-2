@@ -21,7 +21,7 @@ import {
 
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useRouter } from "next/navigation"
 
@@ -55,6 +55,7 @@ export function AdminMenu() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-[240px] sm:w-[300px]">
+              <SheetTitle className="sr-only">Admin Panel</SheetTitle> 
               <div className="flex flex-col gap-6">
                 <div className="flex items-center gap-2">
                   <LayoutDashboard className="h-6 w-6" />
@@ -148,7 +149,7 @@ export function AdminMenu() {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
+              <DropdownMenuContent  align="start" sideOffset={10} className="z-[1000]">
                 <DropdownMenuItem asChild>
                   <Link href="/admin/user">All Users</Link>
                 </DropdownMenuItem>

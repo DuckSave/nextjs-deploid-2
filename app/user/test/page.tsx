@@ -27,7 +27,7 @@ const ChatRoom = () => {
   }, [userData]);
 
   const connect = () => {
-    const socket = new SockJS("https://3.107.182.209:8080/ws");
+    const socket = new SockJS("https://localhost:8080/ws");
     const client = new Client({
       webSocketFactory: () => socket,
       reconnectDelay: 5000,

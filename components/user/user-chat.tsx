@@ -1,24 +1,15 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import { Send } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { AdminMenu } from "@/components/user/user-menu"
-import { jwtDecode } from "jwt-decode"
-import { Client } from "@stomp/stompjs"
-import SockJS from "sockjs-client"
+import { useState, useEffect, useRef } from "react";
+import { Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { AdminMenu } from "@/components/user/user-menu";
+import { jwtDecode } from "jwt-decode";
+import useWebSocketChat from "@/components/hook/webSocket"; // Import hook mới
 
-const mockUsers = [{ id: "67cabe7847d75855dda56975", name: "Admin" }]
-
-interface Message {
-  id: number
-  senderId: string
-  receiverId: string
-  content: string
-  timestamp: string
-}
+const mockUsers = [{ id: "67cabe7847d75855dda56975", name: "ĐL Fake" }];
 
 const Sidebar: React.FC<{ onSelectUser: (userId: string) => void; onLogout: () => void }> = ({ onSelectUser, onLogout }) => (
   <div className="w-16 md:w-64 bg-card border-r transition-all duration-300">
@@ -35,85 +26,40 @@ const Sidebar: React.FC<{ onSelectUser: (userId: string) => void; onLogout: () =
       </Button>
     </div>
   </div>
-)
+);
 
 export default function UserPage() {
-  const [selectedUserId, setSelectedUserId] = useState<string | null>(null)
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState("")
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [client, setClient] = useState<Client | null>(null)
-  const [userId, setUserId] = useState<string | null>(null)
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [input, setInput] = useState("");
 
+  // Lấy userId từ token
   useEffect(() => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     if (token) {
       try {
-        const decoded: any = jwtDecode(token)
-        setUserId(decoded.userId || decoded.sub)
+        const decoded: any = jwtDecode(token);
+        setUserId(decoded.userId || decoded.sub);
       } catch (error) {
-        console.error("Lỗi khi giải mã token:", error)
+        console.error("Lỗi khi giải mã token:", error);
       }
     }
-  }, [])
+  }, []);
+
+  // Sử dụng hook WebSocket
+  const { messages, sendMessage }: { messages: { senderName: string; receiverName: string; message: string }[]; sendMessage: (message: string) => void } = useWebSocketChat(userId, selectedUserId);
 
   useEffect(() => {
-    if (!userId) return;
-  
-    const stompClient = new Client({
-      webSocketFactory: () => new SockJS("https://3.107.182.209:8080/ws"),
-      onConnect: () => {
-        console.log("✅ Kết nối WebSocket thành công!");
-    
-        stompClient.subscribe(`/user/${userId}/private`, (message) => {
-          console.log("📩 Tin nhắn nhận được từ server:", message.body);
-          const receivedMessage = JSON.parse(message.body);
-          console.log("📩 Nội dung tin nhắn:", receivedMessage);
-        });
-    
-        console.log("📡 Đã subscribe tới: /user/queue/messages");
-      },
-      onStompError: (frame) => {
-        console.error("❌ Lỗi WebSocket:", frame);
-      }
-    });
-    
-    stompClient.activate();
-    setClient(stompClient);
-  
-    return () => {
-      stompClient.deactivate();
-    };
-  }, [userId, selectedUserId]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!input.trim() || !selectedUserId || !userId || !client) return;
-  
-    const newMessage = {
-      senderId: userId,
-      receiverId: selectedUserId,
-      content: input.trim(),
-      timestamp: new Date().toISOString(),
-    };
-  
-    client.publish({
-      destination: "/app/chat",
-      body: JSON.stringify(newMessage),
-    });
-  
-    // Thêm tin nhắn vào state để hiển thị ngay lập tức
-    setMessages((prev) => [...prev, { ...newMessage, id: prev.length + 1 }]);
+    if (!input.trim() || !selectedUserId) return;
+    sendMessage(input.trim());
     setInput("");
   };
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -123,27 +69,30 @@ export default function UserPage() {
         <div className="flex-1 flex">
           <Card className="w-full shadow-lg">
             <CardHeader className="bg-primary text-primary-foreground p-2">
-              <CardTitle className="text-2xl">{selectedUserId ? `Chat với ${mockUsers.find((u) => u.id === selectedUserId)?.name}` : "Chọn một người để nhắn tin"}</CardTitle>
+              <CardTitle className="text-2xl">
+                {selectedUserId ? `Chat với ${mockUsers.find((u) => u.id === selectedUserId)?.name}` : "Chọn một người để nhắn tin"}
+              </CardTitle>
             </CardHeader>
-            <CardContent className="h-[77vh] overflow-y-auto p-4 space-y-4">
-                {messages
-                  .filter((m) =>
-                    (m.senderId === userId && m.receiverId === selectedUserId) ||
-                    (m.senderId === selectedUserId && m.receiverId === userId)
-                  )
-                  .map((m) => (
-                    <div key={m.id} className={`flex ${m.senderId === userId ? "justify-end" : "justify-start"}`}>
-                      <div
-                        className={`max-w-[80%] rounded-lg p-3 ${
-                          m.senderId === userId ? "bg-primary text-primary-foreground rounded-br-none" : "bg-muted text-muted-foreground rounded-bl-none"
-                        }`}
-                      >
-                        {m.content}
-                      </div>
+            <CardContent className="h-[74vh] overflow-y-auto p-4 space-y-4">
+              {messages
+                .filter(
+                  (m) =>
+                    (m.senderName === userId && m.receiverName === selectedUserId) ||
+                    (m.senderName === selectedUserId && m.receiverName === userId)
+                )
+                .map((m, index) => (
+                  <div key={index} className={`flex ${m.senderName === userId ? "justify-end" : "justify-start"}`}>
+                    <div
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        m.senderName === userId ? "bg-primary text-primary-foreground rounded-br-none" : "bg-muted text-black rounded-bl-none"
+                      }`}
+                    >
+                      {m.message}
                     </div>
-                  ))}
-                <div ref={messagesEndRef} />
-              </CardContent>
+                  </div>
+                ))}
+              <div ref={messagesEndRef} />
+            </CardContent>
             <CardFooter className="border-t p-2">
               <form onSubmit={handleSubmit} className="flex w-full space-x-2">
                 <Input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Nhập tin nhắn..." className="flex-grow" disabled={!selectedUserId} />
@@ -157,5 +106,5 @@ export default function UserPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
