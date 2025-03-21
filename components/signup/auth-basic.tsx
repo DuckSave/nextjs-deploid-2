@@ -51,19 +51,19 @@ function FloatingPaths({ position }: { position: number }) {
 
 export default function AuthBasic() {
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white dark:bg-neutral-950">
+    <div className="relative w-screen h-screen flex items-center justify-center bg-white dark:bg-neutral-950">
       {/* Background Animation */}
       <div className="absolute inset-0">
         <FloatingPaths position={1} />
         <FloatingPaths position={-1} />
       </div>
 
-      {/* Form Container */}
-      <div className="relative flex items-center justify-center p-4  dark:bg-black w-full max-w-[70%] md:max-w-[70%] lg:max-w-[70%] min-h-screen">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center w-full">
+      {/* Form Container - Chiếm full màn hình */}
+      <div className="relative flex flex-col justify-center w-full h-full md:max-w-[90%] lg:max-w-[70%]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full h-full items-center">
 
-          {/* Image Section */}
-          <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px]">
+          {/* Image Section - Ẩn trên mobile */}
+          <div className="relative w-full h-[300px] md:h-[400px] lg:h-[500px] hidden md:block">
             <Image
               src="https://ferf1mheo22r9ira.public.blob.vercel-storage.com/to-the-moon-u5UJD9sRK8WkmaTY8HdEsNKjAQ9bjN.svg"
               alt="To the moon illustration"
@@ -71,17 +71,19 @@ export default function AuthBasic() {
               className="object-cover rounded-lg"
             />
           </div>
-          <div className="w-full space-y-6">
-            <Card className="border-0 shadow-lg">
+
+          {/* Form Section */}
+          <div className="w-full h-full flex items-center justify-center">
+            <Card className="border-0 shadow-lg w-full max-w-md">
               <CardHeader className="space-y-2">
                 <CardTitle className="text-2xl font-semibold tracking-tight text-black dark:text-white">
                   Hello!!!!
                 </CardTitle>
                 <CardDescription className="text-neutral-600 dark:text-neutral-400">
-                  vào đây đăng ký đi nào "không để tên cũng được nha"
+                  muốn giữ bí mật giữa bản thân với ĐL thì khỏi để tên =)))))
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-16">
                 <AuthForm />
                 <SocialLogin />
               </CardContent>
