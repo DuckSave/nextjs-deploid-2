@@ -71,6 +71,10 @@ export default function AdminChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  const getParticipantName = (participantId: string) => {
+    return mockUsers.find((u) => u.id === participantId)?.name || participantId;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim() || !selectedUserId) return;
@@ -87,7 +91,7 @@ export default function AdminChatPage() {
           <Card className="w-full shadow-lg">
             <CardHeader className="bg-primary text-primary-foreground p-2">
               <CardTitle className="text-2xl">
-                {selectedUserId ? `Chat với ${mockUsers.find((u) => u.id === selectedUserId)?.name || selectedUserId}` : "Chọn một người để nhắn tin"}
+                {selectedUserId ? `Chat với ${getParticipantName(selectedUserId)}` : "Chọn một người để nhắn tin"}
               </CardTitle>
             </CardHeader>
             <CardContent className="h-[77vh] overflow-y-auto p-4 space-y-4">
