@@ -211,10 +211,10 @@ export default function AboutMe() {
                 biệt là nó giống mình 100%, về cách ăn nói chuyện hiền lành và nhiều thứ khác, nhưng mà đôi khi sẽ là ĐL real =))
               </p>
               <p className="text-muted-foreground mb-4 md:mb-6 text-sm md:text-base">
-                Mọi người yên tâm, là mọi thứ sẽ trả lời là 100% sự thật nhé ,"TẤT CẢ MỌI THỨ VỀ ĐL".
+                Mọi thứ sẽ trả lời là 100% sự thật nhé ,"TẤT CẢ MỌI THỨ VỀ ĐL".
               </p>
               <p className="text-muted-foreground mb-4 md:mb-6 text-sm md:text-base">
-                Nhưng mà vẫn còn một xíu hạn chế là có sẽ hoạt động , ban ngày thôi , và mọi tin nhắn của mọi người sẽ
+                Nhưng mà vẫn còn một xíu hạn chế là nó sẽ hoạt động tùy lúc =))) ,tin nhắn của mọi người sẽ
                 không được lưu lại , kể cả ĐL fake cũng sẽ không lưu. Tránh trường hợp ĐL real vào xem tin nhắn của mọi
                 người hỏi =))))
               </p>
