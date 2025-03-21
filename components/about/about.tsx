@@ -167,22 +167,7 @@ export default function AboutMe() {
           </motion.div>
 
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={fadeIn}
-            >
-              <div
-                style={{
-                  backgroundImage: "url('https://i.pinimg.com/736x/5d/fa/00/5dfa006a33fdcd98b9b4dc7e125acf3e.jpg')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  width: "500px",
-                  height: "600px",
-                }}
-              />
-            </motion.div>
+            
 
             <motion.div
               initial="hidden"
