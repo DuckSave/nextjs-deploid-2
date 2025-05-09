@@ -198,13 +198,14 @@ export default function AboutMe() {
             >
               <h3 className="text-xl md:text-2xl font-bold mb-4">À thì.... , xin chào mình là Đức Lưu</h3>
               <p className="text-muted-foreground mb-4 md:mb-6 text-sm md:text-base">
-                Cảm hứng mình làm ra sản phẩm này là.... có 1 bạn , bạn bị ngại nhắn tin , giờ bạn cũng không muốn nói
-                chuyện với mình nữa , chắc vì một lý do nào đó...
+                Cảm hứng mình làm ra sản phẩm này là.... có 1 bạn , xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
               </p>
               <p className="text-muted-foreground mb-4 md:mb-6 text-sm md:text-base">
-                Cho nên mình làm ra sản phẩm này là , một ngày nào đó mình sẽ nhắn tin hoặc nói chuyện lại với bạn ,
-                mình có thể chỉ bài bạn ấy nữa , mình có thể làm mọi việc bạn ấy nhờ..., mặc dù mình chả làm được gì cho
-                bạn ấy cả. Mong là trong các người dùng sẽ có bạn ấy.
+                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
               </p>
               <p className="text-muted-foreground mb-4 md:mb-6 text-sm md:text-base">
                 Và yên tâm rằng là sản phẩm này khi các bạn hỏi hoặc nhắn với ĐL Fake thì hoàn toàn là AI chat , và đặt
@@ -329,7 +330,7 @@ export default function AboutMe() {
       <footer className="py-6 md:py-8 bg-muted text-center">
         <div className="container px-4 sm:px-6">
           <p className="text-xs md:text-sm">
-            © dự án hoàn thành 21/3/2025, sau 2 tháng phát triển kể từ ngày im re =)))
+            © dự án hoàn thành 21/3/2025
           </p>
         </div>
       </footer>
